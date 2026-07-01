@@ -4,6 +4,7 @@
   import { Route } from '$lib/route';
   import { Icon, modalManager, Text } from '@immich/ui';
   import {
+    mdiAccountSearchOutline,
     mdiCellphoneArrowDownVariant,
     mdiContentDuplicate,
     mdiCrosshairsGps,
@@ -18,6 +19,7 @@
     { href: Route.largeFileUtility(), icon: mdiImageSizeSelectLarge, label: $t('review_large_files') },
     { href: Route.geolocationUtility(), icon: mdiCrosshairsGps, label: $t('manage_geolocation') },
     { href: Route.workflows(), icon: mdiStateMachine, label: $t('workflows') },
+    { href: Route.unassignedFacesUtility(), icon: mdiAccountSearchOutline, label: $t('unassigned_faces') },
   ];
 </script>
 

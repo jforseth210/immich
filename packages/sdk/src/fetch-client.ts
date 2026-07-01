@@ -838,6 +838,10 @@ export type PersonResponseDto = {
     /** Last update date */
     updatedAt?: string;
 };
+export type FaceCandidateDto = {
+    person: PersonResponseDto;
+    similarity: number | null;
+};
 export type AssetStackResponseDto = {
     /** Number of assets in stack */
     assetCount: number;
@@ -4735,6 +4739,22 @@ export function getFaces({ id }: {
         data: AssetFaceResponseDto[];
     }>(`/faces${QS.query(QS.explode({
         id
+    }))}`, {
+        ...opts
+    }));
+}
+/**
+ * Get face candidates
+ */
+export function getFaceCandidates({ id, size }: {
+    id: string;
+    size?: number;
+}, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.ok(oazapfts.fetchJson<{
+        status: 200;
+        data: FaceCandidateDto[];
+    }>(`/faces/${encodeURIComponent(id)}/candidates${QS.query(QS.explode({
+        size
     }))}`, {
         ...opts
     }));

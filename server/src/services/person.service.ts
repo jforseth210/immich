@@ -10,6 +10,8 @@ import {
   AssetFaceDeleteDto,
   AssetFaceResponseDto,
   AssetFaceUpdateDto,
+  FaceCandidateDto,
+  FaceCandidatesDto,
   FaceDto,
   mapFaces,
   mapPerson,
@@ -130,6 +132,15 @@ export class PersonService extends BaseService {
     const assetDimensions = getDimensions(asset);
 
     return faces.map((face) => mapFaces(face, auth, asset.edits, assetDimensions));
+  }
+
+  async getFaceCandidates(auth: AuthDto, faceId: string, dto: FaceCandidatesDto): Promise<FaceCandidateDto[]> {
+    await this.requireAccess({ auth, permission: Permission.FaceRead, ids: [faceId] });
+    const results = await this.personRepository.getFaceCandidates(auth.user.id, faceId, { count: dto.size });
+    return results.map((person) => ({
+      person: mapPerson(person),
+      similarity: (person as any).similarity ?? null,
+    }));
   }
 
   async createNewFeaturePhoto(changeFeaturePhoto: string[]) {

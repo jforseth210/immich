@@ -6,6 +6,8 @@ import {
   AssetFaceCreateDto,
   AssetFaceDeleteDto,
   AssetFaceResponseDto,
+  FaceCandidateDto,
+  FaceCandidatesDto,
   FaceDto,
   PersonResponseDto,
 } from 'src/dtos/person.dto';
@@ -40,6 +42,22 @@ export class FaceController {
   })
   getFaces(@Auth() auth: AuthDto, @Query() dto: FaceDto): Promise<AssetFaceResponseDto[]> {
     return this.service.getFacesById(auth, dto);
+  }
+
+  @Get(':id/candidates')
+  @Authenticated({ permission: Permission.FaceRead })
+  @Endpoint({
+    summary: 'Get face candidates',
+    description:
+      'Retrieve a list of named people whose facial embeddings are most similar to the given face. Results include a similarity score between 0 and 1.',
+    history: new HistoryBuilder().added('v1.132.0').beta('v1.132.0').stable('v2'),
+  })
+  getFaceCandidates(
+    @Auth() auth: AuthDto,
+    @Param() { id }: UUIDParamDto,
+    @Query() query: FaceCandidatesDto,
+  ): Promise<FaceCandidateDto[]> {
+    return this.service.getFaceCandidates(auth, id, query);
   }
 
   @Put(':id')

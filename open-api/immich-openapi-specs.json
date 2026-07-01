@@ -6262,6 +6262,81 @@
         "x-immich-state": "Stable"
       }
     },
+    "/faces/{id}/candidates": {
+      "get": {
+        "description": "Retrieve a list of named people whose facial embeddings are most similar to the given face. Results include a similarity score between 0 and 1.",
+        "operationId": "getFaceCandidates",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FaceCandidateDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Get face candidates",
+        "tags": [
+          "Faces"
+        ],
+        "x-immich-history": [
+          {
+            "version": "v1.132.0",
+            "state": "Added"
+          },
+          {
+            "version": "v1.132.0",
+            "state": "Beta"
+          },
+          {
+            "version": "v2",
+            "state": "Stable"
+          }
+        ],
+        "x-immich-permission": "face.read",
+        "x-immich-state": "Stable"
+      }
+    },
     "/jobs": {
       "get": {
         "deprecated": true,
@@ -19034,6 +19109,24 @@
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "FaceCandidateDto": {
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/PersonResponseDto"
+          },
+          "similarity": {
+            "maximum": 1,
+            "minimum": 0,
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "required": [
+          "person",
+          "similarity"
+        ],
         "type": "object"
       },
       "FaceDto": {
