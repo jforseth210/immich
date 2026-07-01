@@ -241,6 +241,32 @@ export class PersonRepository {
       .execute();
   }
 
+  @GenerateSql({ params: [DummyValue.UUID, DummyValue.UUID, { count: 10 }] })
+  async getFaceCandidates(userId: string, faceId: string, options: { count: number }) {
+    return this.db
+      .selectFrom('face_search')
+      .innerJoin('asset_face', 'asset_face.id', 'face_search.faceId')
+      .innerJoin('person', 'person.id', 'asset_face.personId')
+      .innerJoin('asset', 'asset.id', 'asset_face.assetId')
+      .selectAll('person')
+      .select(
+        sql<number>`MAX(1 - (face_search.embedding <=> (SELECT embedding FROM face_search WHERE "faceId" = ${faceId})))`.as(
+          'similarity',
+        ),
+      )
+      .where('person.ownerId', '=', userId)
+      .where('person.name', '!=', '')
+      .where('person.isHidden', '=', false)
+      .where('asset_face.deletedAt', 'is', null)
+      .where('asset_face.isVisible', '=', true)
+      .where('asset.deletedAt', 'is', null)
+      .where('asset.visibility', '=', sql.lit(AssetVisibility.Timeline))
+      .groupBy('person.id')
+      .orderBy('similarity', 'desc')
+      .limit(options.count)
+      .execute();
+  }
+
   @GenerateSql({ params: [DummyValue.UUID] })
   getFaceById(id: string) {
     // TODO return null instead of find or fail

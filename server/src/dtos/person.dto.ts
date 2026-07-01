@@ -171,6 +171,23 @@ const PeopleResponseSchema = z
   .describe('People response');
 export class PeopleResponseDto extends createZodDto(PeopleResponseSchema) {}
 
+const FaceCandidateResponseSchema = z
+  .object({
+    person: PersonResponseSchema,
+    similarity: z.number().min(0).max(1).nullable(),
+  })
+  .meta({ id: 'FaceCandidateDto' });
+
+export class FaceCandidateDto extends createZodDto(FaceCandidateResponseSchema) {}
+
+const FaceCandidatesQuerySchema = z
+  .object({
+    size: z.coerce.number().int().min(1).max(100).default(10),
+  })
+  .meta({ id: 'FaceCandidatesDto' });
+
+export class FaceCandidatesDto extends createZodDto(FaceCandidatesQuerySchema) {}
+
 export function mapPerson(person: MaybeDehydrated<Person>): PersonResponseDto {
   return {
     id: person.id,
